@@ -2,7 +2,11 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+adc.cpp
+
 amplifier.cpp
+
+clock.cpp
 
 configuration.cpp
 
@@ -18,7 +22,11 @@ interrupts.cpp
 
 Initialiser.s
 
+LCD.cpp
+
 main.cpp
 
 port.cpp
+
+string_c.cpp
 

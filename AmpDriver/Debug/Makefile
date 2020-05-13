@@ -37,15 +37,19 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../adc.cpp \
 ../amplifier.cpp \
+../clock.cpp \
 ../configuration.cpp \
 ../DG409.cpp \
 ../DS1267.cpp \
 ../encoder.cpp \
 ../HD44780.cpp \
 ../interrupts.cpp \
+../LCD.cpp \
 ../main.cpp \
-../port.cpp
+../port.cpp \
+../string_c.cpp
 
 
 PREPROCESSING_SRCS +=  \
@@ -56,7 +60,9 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+adc.o \
 amplifier.o \
+clock.o \
 configuration.o \
 DG409.o \
 DS1267.o \
@@ -64,11 +70,15 @@ encoder.o \
 HD44780.o \
 interrupts.o \
 Initialiser.o \
+LCD.o \
 main.o \
-port.o
+port.o \
+string_c.o
 
 OBJS_AS_ARGS +=  \
+adc.o \
 amplifier.o \
+clock.o \
 configuration.o \
 DG409.o \
 DS1267.o \
@@ -76,11 +86,15 @@ encoder.o \
 HD44780.o \
 interrupts.o \
 Initialiser.o \
+LCD.o \
 main.o \
-port.o
+port.o \
+string_c.o
 
 C_DEPS +=  \
+adc.d \
 amplifier.d \
+clock.d \
 configuration.d \
 DG409.d \
 DS1267.d \
@@ -88,11 +102,15 @@ encoder.d \
 HD44780.d \
 interrupts.d \
 Initialiser.d \
+LCD.d \
 main.d \
-port.d
+port.d \
+string_c.d
 
 C_DEPS_AS_ARGS +=  \
+adc.d \
 amplifier.d \
+clock.d \
 configuration.d \
 DG409.d \
 DS1267.d \
@@ -100,8 +118,10 @@ encoder.d \
 HD44780.d \
 interrupts.d \
 Initialiser.d \
+LCD.d \
 main.d \
-port.d
+port.d \
+string_c.d
 
 OUTPUT_FILE_PATH +=AmpDriver.elf
 
@@ -117,7 +137,21 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+./adc.o: .././adc.cpp
+	@echo Building file: $<
+	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
+	$(QUOTE)F:\tools\Atmel Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DDEBUG  -I"F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pa -B "F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega324pa" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./amplifier.o: .././amplifier.cpp
+	@echo Building file: $<
+	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
+	$(QUOTE)F:\tools\Atmel Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DDEBUG  -I"F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pa -B "F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega324pa" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./clock.o: .././clock.cpp
 	@echo Building file: $<
 	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
 	$(QUOTE)F:\tools\Atmel Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DDEBUG  -I"F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pa -B "F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega324pa" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
@@ -166,6 +200,13 @@ LINKER_SCRIPT_DEP+=
 	@echo Finished building: $<
 	
 
+./LCD.o: .././LCD.cpp
+	@echo Building file: $<
+	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
+	$(QUOTE)F:\tools\Atmel Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DDEBUG  -I"F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pa -B "F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega324pa" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./main.o: .././main.cpp
 	@echo Building file: $<
 	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
@@ -174,6 +215,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./port.o: .././port.cpp
+	@echo Building file: $<
+	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
+	$(QUOTE)F:\tools\Atmel Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DDEBUG  -I"F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pa -B "F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega324pa" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./string_c.o: .././string_c.cpp
 	@echo Building file: $<
 	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
 	$(QUOTE)F:\tools\Atmel Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DDEBUG  -I"F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pa -B "F:\tools\Atmel Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\gcc\dev\atmega324pa" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

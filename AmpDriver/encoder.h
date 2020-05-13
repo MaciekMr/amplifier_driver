@@ -9,6 +9,8 @@
 #ifndef ENCODER_H_
 #define ENCODER_H_
 
+#define SCHMITT_NEG 1  //Used if inverting Schmitt gate is used
+
 #define MAX_ENCODER_VAL 512
 
 
@@ -28,7 +30,7 @@ namespace nm_encoder{
 #define ENC_PORT_B	 PINB3
 
 /*
-Encoder board can use shmitt trigger and schmitt trigger with not gate
+Encoder board can use schmitt trigger and negative schmitt trigger gate
 The second case we need to check negative code of the encoder
 To make the reading simpler
 We read the direction
@@ -43,9 +45,9 @@ and second read when both pins are got the same state (mid state)
 	
 	
 	
-	//Encoder has two values
-	// depends on the rotate (left-right)
-	// the values has present in opposite order
+	//Encoder has get two values
+	// depends on the rotate (cw or ccw)
+	// the values are present in opposite order
 	// First, we need to assign pins to read encoder values
 	// Both pins has to be set with pull-up
 	struct encoder_conf{
@@ -98,7 +100,8 @@ and second read when both pins are got the same state (mid state)
 			bool stable_port_sw;
 			
 			uint8_t direction;
-			uint8_t _state, _temp_state;
+			uint8_t en_state, en_temp_state;
+			uint8_t sw_state, sw_tmp_state;
 			
 			
 		public:
@@ -123,6 +126,10 @@ and second read when both pins are got the same state (mid state)
 			uc get_button_state();
 			
 			uc get_state();
+			
+			void increment_val();
+			void decrement_val();
+			void sw_change();
 		};
 	
 	

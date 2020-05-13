@@ -209,9 +209,6 @@ int main(void)
 	
 
 	
-	unsigned char portb;
-	
-	
 	sei();
 	char line[20] ="                   ";
 	char line4[20]="Encoder:           ";
@@ -224,9 +221,7 @@ int main(void)
 	
 	encoder *en = encoder::get_encoder();
 	
-	char * len;
-	//memset(line2,32,20);
-	
+		
     while (1) 
     {
 		
@@ -280,20 +275,18 @@ int main(void)
 		//Set the line value based on SW of encoder
 		
 		if(en->get_state(0))
-			strncpy(&line4[10], up, 5);
+			strncpy(&line4[8], up, 4);
 		else
-			strncpy(&line4[10], dw, 5);
+			strncpy(&line4[8], dw, 4);
 		
-		itoa(en->get_state(), &line4[14], 2);
+		itoa(en->get_state(), &line4[12], 6);
 		
 		lcd.set_line(2, line);
 		lcd.set_line(3, line4);
 		//LCD_GoTo(0,2);
 		//LCD_WriteText(line);
 		//LCD_GoTo(0,3);
-		//LCD_WriteText(line4);
-		
-		
+		//LCD_WriteText(line4);		
     }
 }
 

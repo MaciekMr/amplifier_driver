@@ -23,7 +23,7 @@ main.d main.o: .././main.cpp \
  .././list.h \
  f:\tools\atmel\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  f:\tools\atmel\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\alloca.h \
- .././encoder.h
+ .././encoder.h .././clock.h .././string_c.h .././LCD.h
 
 f:\tools\atmel\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -82,3 +82,9 @@ f:\tools\atmel\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.
 f:\tools\atmel\ studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\alloca.h:
 
 .././encoder.h:
+
+.././clock.h:
+
+.././string_c.h:
+
+.././LCD.h:

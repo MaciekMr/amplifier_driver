@@ -42,8 +42,8 @@ void set_encoder_timer(){
 	
 	TCCR0A  = 0x00;
 	TCNT0   = 0x00;
-	TCCR0B |= (0<<FOC0A)|(0<<FOC0B)|(0<<WGM02)|(0 << CS02)|(1 << CS01)|(0 << CS00); //Mode CTC, PreSCALER = 1024 (100Hz) -> 10ms
-	OCR0B   = 4;//250-1; 100Hz
+	TCCR0B |= (0<<FOC0A)|(0<<FOC0B)|(0<<WGM02)|(0 << CS02)|(1 << CS01)|(1 << CS00); //Mode CTC, PreSCALER = 1024 (100Hz) -> 10ms
+	OCR0B   = 20;//250-1; 100Hz
 	TIFR1  |= (1<<OCF0B);
 	TIMSK0 |= (1<<OCIE0B);
 }
@@ -77,12 +77,6 @@ void read_encoder_status(){
 	// A = 0 B = 1 and last status was A = 1 and B = 1 it CW (clock wise)
 	// A = 1 B = 0 and last status was A = 1 and B = 1 it CCW (counter clock wise)
 	// A = 0 B = 1 and last status was A = 0 and B = 0 it CCW (counter clock wise)
-	
-	uint8_t stable_A;
-	uint8_t stable_B;
-	
-	uint8_t temp_A;
-	uint8_t temp_B;
 	
 	//First for initialisation read the port A and B
 	//stable_A = encoder_a.getValue();
@@ -118,33 +112,28 @@ namespace nm_encoder{
 		ENC_PORT ^= (-1 ^ ENC_PORT) & (1UL << ENC_PORT_A);
 		ENC_PORT ^= (-1 ^ ENC_PORT) & (1UL << ENC_PORT_B);  //portx ^= (-1 ^ portx) & (1UL << pin);
 		
-		/*	
-		//set the input mode with pull_up 
-		config.encoder_A.setMode(0);
-		config.encoder_B.setMode(0);
-		config.encoder_SW.setMode(0);
 		
-		
-		*/
 		//Read the initial values of encoder
-		output_a		= (ENC_PORT>>ENC_PORT_A)&1U;    //config.encoder_A.getValue();
-		output_b		= (ENC_PORT>>ENC_PORT_B)&1U;    //config.encoder_B.getValue();
+		
+		en_state = get_cencoder_state();
 		stable_port_sw	= (ENC_PORT>>ENC_PORT_SW)&1U;    //config.encoder_SW.getValue();
 		//Set the initial value of encoder to 0
 		
-		temp_out_a = output_a;
-		temp_out_b = output_b;
+		sw_state = get_button_state();
 		
+		en_temp_state = (en_state>>2);
+		sw_tmp_state = sw_state;
 		
 		encoder_value = 0;
 		direction     = 0;
-		_state        = 0; 
 		encoder_pointer = this;
 		
 	}
 	
 	bool encoder::get_sw_state(){
 	
+		if(sw_state != sw_tmp_state)
+			sw_change();
 		return stable_port_sw;	
 	}
 	
@@ -155,103 +144,67 @@ namespace nm_encoder{
 	void encoder::read_encoder(){
 		
 		//Read the port A and port B values to temporary values
-		/*
-		stable_port_sw = config.encoder_SW.getValue();
-		porta          = config.encoder_A.getValue();
-		portb          = config.encoder_B.getValue();
-		*/
-		stable_port_sw	  = get_state(0);
-		output_a          = get_state(1);
-		output_b          = get_state(2);
-		
+		stable_port_sw = get_button_state();
+		en_state	   = get_cencoder_state();
 		
 		/*
-		_state = get_cencoder_state();
-		
-		*//*
 		If the porta != temp_port_a && portb == temp_port_b
 		-- we have rotation started
 		-- it is CW
 		*/
 		//Define the rotation direction
 		//First check if the A is before B
-		//Assuming the high level is no rotation
+		//Assuming the high level means no rotation
 		
-		//a and b -> 1,0
-		/*
-		if((_state & enc_1) &&
-		  (_temp_state & enc_3)){
-			  
-			  direction = 0;
-		  }
-		  
-		if((_state & enc_2) &&
-		(_temp_state & enc_3)){
-			  
-			direction = 1;
-		}
-	
-		if((_state & enc_2) &&
-		(_temp_state & enc_3)){
+		
+		
+
+
+		//if state of encoderis changed
+		if(en_state != en_temp_state){
 			
-			direction = 1;
-		}
+	
+			
+			//cw direction
+			if(en_state == enc_1){  //en_state -> 0001
+			
+				direction = 0;
+			}
 		
-		if((_state & enc_0) &&
-		(_temp_state & enc_1)){
+			//ccw rotation
+			if(en_state == enc_2){   //en_state -> 0010
+			
+				direction = 1;
+			}
+		
+#ifdef SCHMITT_NEG					
+			
+			if(direction == 0 && en_state == enc_3){ //en_state -> 0011
+				decrement_val();
+				direction = -1;
+			}
+		
+			if(direction == 1 && en_state == enc_3){ //en_state -> 0011
+			
+				increment_val();
+				direction = -1;
+			}
+#else
+			
+			if(direction == 0 && en_state == enc_0){ //en_state -> 0000
+				decrement_val();
+				direction = -1;
+			}
+						
+			if(direction == 1 && en_state == enc_0){ //en_state -> 0000
 				
-			encoder_value--;
-		}
-		
-		if((_state & enc_0) &&
-		(_temp_state & enc_2)){
-			
-			encoder_value++;
-		}
-		
-		*/
-	
-		//Check ccw
-			
-		if((output_a == 0 && temp_out_a == 1)
-		&& (output_b == 1 && temp_out_b == 1)) {
-
-			//Rotation begin
-			direction = 0;
-			//printf("Rotation cw begin:\n");
-
+				increment_val();
+				direction = -1;
+			}
+#endif		
 		}
 
-		//Check cw
-		if ((output_a == 1 && temp_out_a == 1)
-		&& (output_b == 0 && temp_out_b == 1)) {
-
-			//Rotation begin
-			direction = 1;
-			//printf("Rotation ccw begin:\n");
-		}
-
-		//Next round of ccw - both outs are equal
-		if ((output_a == 0 && temp_out_a == 0)
-		&& (output_b == 0 && temp_out_b == 1)) {
-			
-			//Now the output B is low
-			encoder_value--;
-			//printf("Rotation cw continue\n");
-			
-		}
-		//move cw
-		if ((output_a == 0 && temp_out_a == 1)
-		&& (output_b == 0 && temp_out_b == 0)) {
-
-			//Now the output A is low
-			encoder_value++;
-			//printf("Rotation ccw continue\n");
-		}
-
-
-		temp_out_a = output_a;
-		temp_out_b = output_b;	
+		en_temp_state = en_state;		
 	}
 	
 	
@@ -274,15 +227,6 @@ namespace nm_encoder{
 						((ENC_PORT>>ENC_PORT_B)&1U));  //return gray code 00,01,10,11 
 		}			
 		
-		/*
-		__asm{
-			
-			in r16, ENC_PORT ;loading encoder port to r16
-			in r17, 0
-			in r17, (r16>>ENC_PORT_A)&0x01
-						
-		}*/
-		
 	}
 	
 	
@@ -297,11 +241,11 @@ namespace nm_encoder{
 		
 	}
 	
+	inline 
 	uc encoder::get_cencoder_state(){
 		
-		uc _state_ = (((ENC_PORT>>ENC_PORT_A)&1U)<<1)|
-					 (((ENC_PORT>>ENC_PORT_B)&1U));
-		
+		uc _state_ = ((((ENC_PORT>>ENC_PORT_A)&1U)<<1)|
+					  (((ENC_PORT>>ENC_PORT_B)&1U)));
 		return(_state_);
 	}
 	
@@ -314,7 +258,23 @@ namespace nm_encoder{
 	
 	uc encoder::get_state(){
 	
-		return(_state);
+		return(en_state);
+	}
+	
+	
+	void encoder::increment_val(){
+		
+		encoder_value++;
+	}
+	
+	void encoder::decrement_val(){
+		
+		encoder_value--;
+	}
+	
+	void encoder::sw_change(){
+		
+		encoder_value = 0;
 	}
 	
 };
