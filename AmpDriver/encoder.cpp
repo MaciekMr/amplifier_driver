@@ -30,11 +30,14 @@ volatile long reaction = 0;
 
 ISR(TIMER0_COMPB_vect){
 	
-	//Function executed each 10 ms
-	if(reaction++ > 1024)
-		reaction = 0;
+	//Function executed 7kHz
+	if(reaction++ > 100){
+		
+		reaction = 0;  //Refresh the screen 60Hz
+	}
 	nm_encoder::encoder *en = nm_encoder::encoder::get_encoder();
 	en->read_encoder();
+	en->read_switch();
 }
 
 
@@ -42,8 +45,8 @@ void set_encoder_timer(){
 	
 	TCCR0A  = 0x00;
 	TCNT0   = 0x00;
-	TCCR0B |= (0<<FOC0A)|(0<<FOC0B)|(0<<WGM02)|(0 << CS02)|(1 << CS01)|(1 << CS00); //Mode CTC, PreSCALER = 1024 (100Hz) -> 10ms
-	OCR0B   = 20;//250-1; 100Hz
+	TCCR0B |= (0<<FOC0A)|(0<<FOC0B)|(0<<WGM02)|(0 << CS02)|(1 << CS01)|(1 << CS00); //Mode CTC, PreSCALER = 64 -> 125kHz (base 8MHz)
+	OCR0B   = 20;// trigerred every 20th time -> 6,25kHz
 	TIFR1  |= (1<<OCF0B);
 	TIMSK0 |= (1<<OCIE0B);
 }
@@ -93,7 +96,8 @@ namespace nm_encoder{
 	encoder * encoder::encoder_pointer;
 
 
-	encoder::encoder(pin_port SW, pin_port A, pin_port B){
+	//encoder::encoder(pin_port SW, pin_port A, pin_port B)
+	encoder::encoder(){
 	
 		/*
 		config.encoder_SW = SW;
@@ -115,8 +119,8 @@ namespace nm_encoder{
 		
 		//Read the initial values of encoder
 		
-		en_state = get_cencoder_state();
-		stable_port_sw	= (ENC_PORT>>ENC_PORT_SW)&1U;    //config.encoder_SW.getValue();
+		en_state = get_encoder_state();
+		sw_state = get_button_state(); //ENC_PORT>>ENC_PORT_SW)&1U;    //config.encoder_SW.getValue();
 		//Set the initial value of encoder to 0
 		
 		sw_state = get_button_state();
@@ -126,16 +130,41 @@ namespace nm_encoder{
 		
 		encoder_value = 0;
 		direction     = 0;
+		clicks        = 0;
 		encoder_pointer = this;
 		
 	}
+		
+	/*
+	This method will read the button state
+	and will execute 3 calls,
+	depends on switch state:
+	1. Switch change from UP-> DOWN
+	2. Switch is DOWN
+	3. Switch is change from DOWN-> UP
 	
-	bool encoder::get_sw_state(){
+	*/
 	
-		if(sw_state != sw_tmp_state)
-			sw_change();
-		return stable_port_sw;	
+	void encoder::read_switch(){
+		
+		sw_state = get_button_state();
+		
+		if(sw_state != sw_tmp_state){
+			
+			if(sw_state == 0){
+				//call sw_change_down()
+				//call_sw_down();
+				sw_change_down();
+				sw_down();
+			}else{
+				//call sw_change_up();
+				sw_change_up();
+			}
+			sw_tmp_state = sw_state;
+		}
+		
 	}
+	
 	
 	
 	//Sometimes the encoder can work on negative signals.
@@ -144,9 +173,7 @@ namespace nm_encoder{
 	void encoder::read_encoder(){
 		
 		//Read the port A and port B values to temporary values
-		stable_port_sw = get_button_state();
-		en_state	   = get_cencoder_state();
-		
+		en_state	   = get_encoder_state();
 		/*
 		If the porta != temp_port_a && portb == temp_port_b
 		-- we have rotation started
@@ -155,15 +182,8 @@ namespace nm_encoder{
 		//Define the rotation direction
 		//First check if the A is before B
 		//Assuming the high level means no rotation
-		
-		
-		
-
-
 		//if state of encoderis changed
 		if(en_state != en_temp_state){
-			
-	
 			
 			//cw direction
 			if(en_state == enc_1){  //en_state -> 0001
@@ -201,34 +221,13 @@ namespace nm_encoder{
 				increment_val();
 				direction = -1;
 			}
-#endif		
+			
+			en_temp_state = en_state;
+#endif	
 		}
 
-		en_temp_state = en_state;		
+				
 	}
-	
-	
-	
-	
-	
-	uc  encoder::get_state(uc pin){
-		
-		
-		switch(pin){
-			
-			case 0:
-				return((ENC_PORT>>ENC_PORT_SW)&1U);
-			case 1:
-				return((ENC_PORT>>ENC_PORT_A)&1U);
-			case 2:
-				return((ENC_PORT>>ENC_PORT_B)&1U);
-			default:
-				return((((ENC_PORT>>ENC_PORT_A)&1U)<<1)|
-						((ENC_PORT>>ENC_PORT_B)&1U));  //return gray code 00,01,10,11 
-		}			
-		
-	}
-	
 	
 	uint16_t encoder::get_encoder_value(){
 		
@@ -241,27 +240,29 @@ namespace nm_encoder{
 		
 	}
 	
-	inline 
-	uc encoder::get_cencoder_state(){
+	 
+	uc encoder::get_encoder_state(){
 		
-		uc _state_ = ((((ENC_PORT>>ENC_PORT_A)&1U)<<1)|
-					  (((ENC_PORT>>ENC_PORT_B)&1U)));
+		//uc _state_ = ((((ENC_PORT>>ENC_PORT_A)&1U)<<1)|
+		//			  (((ENC_PORT>>ENC_PORT_B)&1U)));
+		
+		uc _state_ = (((ENC_PORT>>(ENC_PORT_A-1))&2U)|  //check second bit (and 00000010)
+		   		      ((ENC_PORT>>ENC_PORT_B)&1U));     // check last bit
+		
 		return(_state_);
 	}
 	
 	uc encoder::get_button_state(){
 		
-		uc _state_ = ((ENC_PORT>>ENC_PORT_SW)&1U);
+		uc _state_ = (ENC_PORT>>ENC_PORT_SW)&1U;  //0 or 1
+		
+		#ifdef SCHMITT_NEG
+			_state_ ^= 1U;
+		#endif		
 		
 		return(_state_);
 	}
-	
-	uc encoder::get_state(){
-	
-		return(en_state);
-	}
-	
-	
+		
 	void encoder::increment_val(){
 		
 		encoder_value++;
@@ -272,9 +273,23 @@ namespace nm_encoder{
 		encoder_value--;
 	}
 	
-	void encoder::sw_change(){
+	void encoder::sw_down(){
 		
 		encoder_value = 0;
 	}
 	
+	void encoder::sw_change_down(){
+		
+		//encoder_value = 0;
+	}
+	
+	void encoder::sw_change_up(){
+		
+		clicks++;
+	}
+	
+	uc encoder::get_clicks(){
+		
+		return(clicks);
+	}
 };

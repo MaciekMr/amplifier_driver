@@ -189,15 +189,7 @@ int main(void)
 	*/
 	
 	//Initialise encoder
-	pin_port encoder_sw(DDRB,PORTB, PINB, PINB1);
-	pin_port encoder_a(DDRB,PORTB, PINB, PINB2);
-	pin_port encoder_b(DDRB,PORTB, PINB, PINB3);
-		
-	encoder_sw.setMode(0);
-	encoder_a.setMode(0);
-	encoder_b.setMode(0);
-		
-	encoder enc(encoder_sw, encoder_a, encoder_b);
+	encoder enc;
 	
 	//Enable interrupts
 	timer_initialise();
@@ -237,56 +229,55 @@ int main(void)
 		
 		//state = encoder_sw.getValue();
 		
-		state = (PINB >> PINB1) & 1U;
-		state1 = encoder_sw.getValue();
+		//Execute part 100 times per second
+		if(!reaction){
 		
-		if(state){ //true
-			itoa(1, &line1[12],10);
+			//state = (PINB >> PINB1) & 1U;
+			state1 = en->get_clicks();
+		
+			//itoa(1, &line1[12],10);
 			itoa(state1, &line1[16],10);
-		}else{
-			itoa(0, &line1[12],10);
-			itoa(state1, &line1[16],10);
+			lcd.set_line(0,line1);
+			//LCD_GoTo(0,0);
+			//LCD_WriteText(line1);
+		
+			//lcd.set_line(1, "                   ");
+			//memset(&line2[0],32,20);
+		
+			//len = itoa(en->get_encoder_value(), &line2[0], 10);
+			//lcd.set_line(1, line2, 2);
+		
+			lcd.set_line(1, en->get_encoder_value());
+			//lcd.set_line(1, "              ", strlen(len)+1);
+			//itoa(encoder_sw.get_port_reg(), &line2[4], 10);
+			//itoa(encoder_sw.get_pinx_reg(), &line2[8], 10);
+			//itoa(encoder_sw.get_pin_pos(), &line2[12], 10);
+			//LCD_GoTo(0,1);
+			//LCD_WriteText(line2);
+		
+			strncpy(&line[6], clock_.get_watch(seconds,sec), 12);
+			//strncpy(clock_.get_watch(seconds,sec),&line[18],2);
+		
+		
+			//memset(&line4[8], 0x20, 12);
+			//itoa(reaction, &line4[10],10);
+		
+			//Set the line value based on SW of encoder
+		
+			if(en->get_button_state())
+				strncpy(&line4[8], up, 4);
+			else
+				strncpy(&line4[8], dw, 4);
+		
+			itoa(en->get_encoder_state(), &line4[12], 6);
+		
+			lcd.set_line(2, line);
+			lcd.set_line(3, line4);
+			//LCD_GoTo(0,2);
+			//LCD_WriteText(line);
+			//LCD_GoTo(0,3);
+			//LCD_WriteText(line4);		
 		}
-		lcd.set_line(0,line1);
-		//LCD_GoTo(0,0);
-		//LCD_WriteText(line1);
-		
-		//lcd.set_line(1, "                   ");
-		//memset(&line2[0],32,20);
-		
-		//len = itoa(en->get_encoder_value(), &line2[0], 10);
-		//lcd.set_line(1, line2, 2);
-		
-		lcd.set_line(1, en->get_encoder_value());
-		//lcd.set_line(1, "              ", strlen(len)+1);
-		//itoa(encoder_sw.get_port_reg(), &line2[4], 10);
-		//itoa(encoder_sw.get_pinx_reg(), &line2[8], 10);
-		//itoa(encoder_sw.get_pin_pos(), &line2[12], 10);
-		//LCD_GoTo(0,1);
-		//LCD_WriteText(line2);
-		
-		strncpy(&line[6], clock_.get_watch(seconds,sec), 12);
-		//strncpy(clock_.get_watch(seconds,sec),&line[18],2);
-		
-		
-		//memset(&line4[8], 0x20, 12);
-		//itoa(reaction, &line4[10],10);
-		
-		//Set the line value based on SW of encoder
-		
-		if(en->get_state(0))
-			strncpy(&line4[8], up, 4);
-		else
-			strncpy(&line4[8], dw, 4);
-		
-		itoa(en->get_state(), &line4[12], 6);
-		
-		lcd.set_line(2, line);
-		lcd.set_line(3, line4);
-		//LCD_GoTo(0,2);
-		//LCD_WriteText(line);
-		//LCD_GoTo(0,3);
-		//LCD_WriteText(line4);		
     }
 }
 

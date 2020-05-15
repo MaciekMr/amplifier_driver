@@ -50,13 +50,6 @@ and second read when both pins are got the same state (mid state)
 	// the values are present in opposite order
 	// First, we need to assign pins to read encoder values
 	// Both pins has to be set with pull-up
-	struct encoder_conf{
-		
-		pin_port	encoder_A;
-		pin_port	encoder_B;	
-		pin_port	encoder_SW;		
-		
-		};
 	
 	//Set the timer interrupt which will read the encoder
 	// will read the data from pins
@@ -90,46 +83,42 @@ and second read when both pins are got the same state (mid state)
 	class encoder{
 		
 		protected:
-			encoder_conf config;
 			static encoder * encoder_pointer;
 			//static encoder* enc_tab[5];
 			int16_t encoder_value;
 			//Encoder port values to read
-			uint8_t	output_a, temp_out_a;
-			uint8_t	output_b, temp_out_b;
-			bool stable_port_sw;
-			
+			uint8_t clicks;
 			uint8_t direction;
 			uint8_t en_state, en_temp_state;
 			uint8_t sw_state, sw_tmp_state;
-			
-			
-		public:
-			encoder(pin_port SW, pin_port A, pin_port B);
-			~encoder();
-			uint16_t get_encoder_value();
 			//Here the encoder is reading and increasing/decreasing value based on logic
+		public:
+			//encoder(pin_port SW, pin_port A, pin_port B);
+			encoder();
+			~encoder();
+			
 			void read_encoder();
-				
+			void read_switch();
+			uint16_t get_encoder_value();
+						
 			//Here we adding new encoder preconfigured to be able to use by timer interruption		
 			static void add_encoder(encoder *);
 			static encoder * get_encoder();
 			void set_encoder_val();
-			bool get_sw_state(); // if high -> true, low -> false
+			//bool get_sw_state(); // if high -> true, low -> false
 		
 			void set_method();
-			
-			uc get_state(uc pin); //0 - sw, 1 - A, 2 - B 
-			
-			uc get_cencoder_state();
-			
+			//inline
+			uc get_encoder_state();
 			uc get_button_state();
-			
-			uc get_state();
+			uc get_clicks();
 			
 			void increment_val();
 			void decrement_val();
-			void sw_change();
+			void sw_change_down();
+			void sw_change_up();
+			void sw_down();
+			
 		};
 	
 	

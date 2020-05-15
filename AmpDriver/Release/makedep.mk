@@ -10,11 +10,15 @@ clock.cpp
 
 configuration.cpp
 
+config_menu.cpp
+
 DG409.cpp
 
 DS1267.cpp
 
 encoder.cpp
+
+execution_queue.cpp
 
 HD44780.cpp
 

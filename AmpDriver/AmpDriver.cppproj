@@ -195,6 +195,15 @@
     <Compile Include="configuration.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="config_menu.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="config_menu.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Controller.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DG409.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -211,6 +220,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="encoder.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="execution_queue.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="execution_queue.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="HD44780.cpp">
