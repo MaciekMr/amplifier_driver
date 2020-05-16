@@ -51,26 +51,6 @@ void set_encoder_timer(){
 	TIMSK0 |= (1<<OCIE0B);
 }
 
-void set_encoder_pin(){
-	
-	//SW is connected to PB1
-	//A  is connected to PB2
-	//B  is connected to PB3
-	
-	pin_port encoder_sw(DDRB,PORTB, PINB, PINB1);
-	pin_port encoder_a(DDRB,PORTB, PINB, PINB2);
-	pin_port encoder_b(DDRB,PORTB, PINB, PINB3);
-	
-	
-	//set the input mode with pull_up mode
-	encoder_sw.setMode(0);
-	encoder_a.setMode(0);
-	encoder_b.setMode(0);
-
-}
-
-void read_encoder_status(){
-
 	//The values are read until the state reach:
 	// 00 or 11 on A and B
 	//We need to remember the statuses before that state
@@ -87,24 +67,16 @@ void read_encoder_status(){
 	
 	//Now read the values temp for each timer interrupt
 	//and replace with stable until it will reach value 00 or 11
-}
+
 
 namespace nm_encoder{
 
-	//config.encoder_A(DDRB,PORTB, PINB, PINB4);
-	//config.encoder_B(DDRB,PORTB, PINB, PINB3);
 	encoder * encoder::encoder_pointer;
 
 
 	//encoder::encoder(pin_port SW, pin_port A, pin_port B)
 	encoder::encoder(){
 	
-		/*
-		config.encoder_SW = SW;
-		config.encoder_A  = A;
-		config.encoder_B  = B;
-		*/
-		
 		MCUCR ^= (-0 ^ MCUCR) & (1UL << PUD); //PUD = 0 ;
 		
 		//set the input mode with pull_up 
@@ -125,7 +97,7 @@ namespace nm_encoder{
 		
 		sw_state = get_button_state();
 		
-		en_temp_state = (en_state>>2);
+		en_temp_state = en_state;
 		sw_tmp_state = sw_state;
 		
 		encoder_value = 0;
@@ -174,15 +146,11 @@ namespace nm_encoder{
 		
 		//Read the port A and port B values to temporary values
 		en_state	   = get_encoder_state();
-		/*
-		If the porta != temp_port_a && portb == temp_port_b
-		-- we have rotation started
-		-- it is CW
-		*/
+		
 		//Define the rotation direction
 		//First check if the A is before B
 		//Assuming the high level means no rotation
-		//if state of encoderis changed
+		//if state of encoder is changed
 		if(en_state != en_temp_state){
 			
 			//cw direction
@@ -222,8 +190,9 @@ namespace nm_encoder{
 				direction = -1;
 			}
 			
+#endif			
 			en_temp_state = en_state;
-#endif	
+	
 		}
 
 				
@@ -242,9 +211,6 @@ namespace nm_encoder{
 	
 	 
 	uc encoder::get_encoder_state(){
-		
-		//uc _state_ = ((((ENC_PORT>>ENC_PORT_A)&1U)<<1)|
-		//			  (((ENC_PORT>>ENC_PORT_B)&1U)));
 		
 		uc _state_ = (((ENC_PORT>>(ENC_PORT_A-1))&2U)|  //check second bit (and 00000010)
 		   		      ((ENC_PORT>>ENC_PORT_B)&1U));     // check last bit

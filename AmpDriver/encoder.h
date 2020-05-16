@@ -120,15 +120,6 @@ and second read when both pins are got the same state (mid state)
 			void sw_down();
 			
 		};
-	
-	
-	
-	
-	
-	
 }
-
-
-
 
 #endif /* ENCODER_H_ */

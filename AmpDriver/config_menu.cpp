@@ -7,12 +7,30 @@
 
 #include <avr/io.h>
 #include "Controller.h"
+#include <string.h>
 #include "config_menu.h"
+
+
+
+
+
 
 // default constructor
 config_menu::config_menu()
 {
+	current_level1_menu = 0;
+	current_level2_menu = 0;
+	current_level3_menu = 0;
 	
+	
+	//menu_element volume = {
+	//	
+	//	
+	//	
+	//};
+	
+	
+	//menu[0] = 
 	
 } //config_menu
 

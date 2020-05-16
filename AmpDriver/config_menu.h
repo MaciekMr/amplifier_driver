@@ -26,7 +26,7 @@
 
 #define menu_back    "Back"
 
-
+#define max_len      20  //maximum lenght of the string (LCD)
 /*
 
 Level1    Volume:      ->  Menu                                  Menu                              Menu ----------------------------> Volume
@@ -39,12 +39,62 @@ Level4
 
 */
 
+
+
+/*
+
+Menu:
+
+Table:
+
+[1][1][0] -> Volume
+[1][2][0] -> -/+XXX dB
+
+Push button-> jump to
+
+[2][1][0] - Menu: Input /Action - push - select input/\ Rotate - change menu
+[2][2][1] - Line1 ->Action push button //select and back up
+[2][2][2] - Line2
+[2][2][3] - Line3
+[2][2][4] - Line4
+
+
+[2][1][0] - Menu2: Info /Action - push - select input/\ Rotate - change menu
+[2][2][1] - Supply voltage: XX V ->Action push button //select and back up
+[2][2][2] - Supply current: XX A
+[2][2][3] - Other1:  XX
+[2][2][4] - Other2:  XX
+
+
+Activity to do:
+1. Present on LCD (set the text)
+2. Set the device value
+
+
+*/
+
+struct menu_element{
+	
+	uint8_t type;  //type digit, string, menu (0,1,2)  (digit - increment the amount, string -> edit?, menu -> scroll left, right or select submenu
+	char name[max_len];
+	uint8_t val;
+	
+	uint8_t index_x, index_y, index_z;
+	
+	menu_element *submenu;  // if = null - no submenu
+	
+	};
+
 class config_menu:
 	public Controller
 {
 //variables
 public:
 protected:
+	uint8_t current_level1_menu, current_level2_menu, current_level3_menu;  //index of three dimensional table
+	menu_element  menu[];
+	
+	menu_element * find_elemen(uint8_t index_x, uint8_t index_y, uint8_t index_z);
 private:
 
 //functions
@@ -59,7 +109,8 @@ public:
 	void switch_down();
 	
 protected:
-
+	void scroll_menu(bool direction);
+	void select_menu(); //react on switch push - if level1 is active -> jump to level2 -> then activate function
 
 
 private:
