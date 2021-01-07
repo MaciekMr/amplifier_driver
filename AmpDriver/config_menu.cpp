@@ -8,6 +8,7 @@
 #include <avr/io.h>
 #include "Controller.h"
 #include <string.h>
+#include "list.h"
 #include "config_menu.h"
 
 
@@ -23,11 +24,14 @@ config_menu::config_menu()
 	current_level3_menu = 0;
 	
 	
-	//menu_element volume = {
-	//	
-	//	
-	//	
-	//};
+	menu_element volume_val = {0, "", 0, 1,2,0, nullptr};
+	menu_element volume_txt = {2, "Volume:", 0, 1,1,0, &volume_val};
+		
+	menu_element input_val_1 = {2, "Line1", 0, 1, 2, 0, &input_val};	
+	menu_element input_val_2 = {2, "Line2", 0, 1, 2, 0, &input_val};	
+	menu_element input_val_3 = {2, "Line3", 0, 1, 2, 0, &input_val};	
+	menu_element input_val_4 = {2, "Line4", 0, 1, 2, 0, &input_val};	
+	menu_element input_selection = {2, "Input:", 0, 1, 2, 0, &input_val};
 	
 	
 	//menu[0] = 

@@ -18,8 +18,10 @@
 #include "HD44780.h"
 #include "DS1267.h"
 #include "DG409.h"
+#include "PWMSet.h"
 #include "encoder.h"
 #include "clock.h"
+#include "menu_element.h"
 #include "LCD.h"
 #include <string.h>
 #include <stdio.h>
@@ -27,12 +29,15 @@
 
 using namespace nm_DS1267;
 using namespace nm_DG409;
+using namespace LCD_DISPLAY;
 using namespace nm_encoder;
 
 
 extern volatile long sec;
 extern volatile long reaction;
 extern volatile long seconds;
+extern volatile long pwm_test;
+extern volatile long pwm_clock;
 
 int day = 0,hrs = 0, min = 0, secs = 0, msecs = 0;
 
@@ -149,6 +154,10 @@ int main(void)
     /* Replace with your application code */
 	//seconds = 0;
 	
+	PWMSet pwm1(1);
+	pwm1.addchannel(&DDRC, &PWM_PORT_C, PINC6);
+	pwm1.setPWM(0, 20);
+	
 	LCD lcd;
 	
 	initialise();
@@ -159,21 +168,95 @@ int main(void)
 	LCD_Home();
 	
 	
+	//config_menu();
+	
+		//Volume
+		menu_element menu1_0(0, 0, 0, "Volume:", 0);
+		menu_element menu1_1(1, 0, 1, "dB", -60);
+		
+		//Input
+		menu_element menu2_0(0, 1, 0, "Input:", 0);
+		menu_element menu2_1(1, 1, 0, "Line1", 0);
+		menu_element menu2_2(1, 1, 0, "Line2", 0);
+		menu_element menu2_3(1, 1, 0, "Line3", 0);
+		menu_element menu2_4(1, 1, 0, "Line4", 0);
+
+		//Config
+		menu_element menu3_0(0, 2, 0, "Info:", 0);
+		menu_element menu3_1(1, 2, 0, "Line1", 0);
+		menu_element menu3_2(1, 2, 0, "Line2", 0);
+		
+
+
+		//Navigation (Volume)
+		menu1_0.setdown(&menu1_1);
+		menu1_0.setnext(&menu2_0);
+		menu1_0.setprev(&menu3_0);
+		menu1_0.settop(nullptr);
+
+		menu1_1.settop(&menu1_0);
+
+		//Navigation (Input)
+		menu2_0.setdown(&menu2_1);
+		menu2_0.setnext(&menu3_0);
+		menu2_0.setprev(&menu1_0);
+		menu2_0.settop(nullptr);
+
+		menu2_1.setdown(nullptr);
+		menu2_1.setnext(&menu2_2);
+		menu2_1.setprev(&menu2_4);
+		menu2_1.settop(&menu2_0);
+
+		menu2_2.setdown(nullptr);
+		menu2_2.setnext(&menu2_3);
+		menu2_2.setprev(&menu2_1);
+		menu2_2.settop(&menu2_0);
+
+		menu2_3.setdown(nullptr);
+		menu2_3.setnext(&menu2_4);
+		menu2_3.setprev(&menu2_2);
+		menu2_3.settop(&menu2_0);
+
+
+		menu2_4.setdown(nullptr);
+		menu2_4.setnext(&menu2_1);
+		menu2_4.setprev(&menu2_3);
+		menu2_4.settop(&menu2_0);
+
+
+		//Navigation (Config)
+		menu3_0.setdown(&menu3_1);
+		menu3_0.setnext(&menu1_0);
+		menu3_0.setprev(&menu2_0);
+		menu3_0.settop(nullptr);
+
+		menu3_1.setdown(nullptr);
+		menu3_1.setnext(&menu3_2);
+		menu3_1.setprev(&menu3_2);
+		menu3_1.settop(&menu3_0);
+
+		menu3_2.setdown(nullptr);
+		menu3_2.setnext(&menu3_1);
+		menu3_2.setprev(&menu3_1);
+		menu3_2.settop(&menu3_0);
+
+		menu menu(&menu1_0);
+	
 	//int a=0;
 	//a = 1 << PA5;
 	
 	
 	
-	lcd.set_line(0, line1);
-	lcd.set_line(1, line2);
-	lcd.set_line(2, line3);
+	//lcd.set_line(0, line1);
+	//lcd.set_line(1, line2);
+	//lcd.set_line(2, line3);
 	//_delay_ms(3000);
 	
 	
 	
 	clock clock_;
 	
-	volatile uc state = 0, state1 = 0;
+	volatile int state = 0, state1 = 0;
 	/*
 	DDRC  |= 0xFF;
 	PORTC |= 0xFF;
@@ -234,10 +317,22 @@ int main(void)
 		
 			//state = (PINB >> PINB1) & 1U;
 			state1 = en->get_clicks();
-		
+			
+			
+			//lcd.set_line(0,"Test");
+			
+			
+			//set timer on line 3
+			lcd.set_line(2,clock_.get_watch(seconds,sec), 4);
+			//Set encoder value
+			lcd.set_line(3, en->get_encoder_value());
+			lcd.set_line(3, pwm_test, 5);
+			lcd.set_line(3, state1, 10);
+			//print all lines		
+			lcd.refresh();
 			//itoa(1, &line1[12],10);
-			itoa(state1, &line1[16],10);
-			lcd.set_line(0,line1);
+			//itoa(state1, &line1[16],10);
+			//lcd.set_line(0,line1);
 			//LCD_GoTo(0,0);
 			//LCD_WriteText(line1);
 		
@@ -247,7 +342,7 @@ int main(void)
 			//len = itoa(en->get_encoder_value(), &line2[0], 10);
 			//lcd.set_line(1, line2, 2);
 		
-			lcd.set_line(1, en->get_encoder_value());
+			
 			//lcd.set_line(1, "              ", strlen(len)+1);
 			//itoa(encoder_sw.get_port_reg(), &line2[4], 10);
 			//itoa(encoder_sw.get_pinx_reg(), &line2[8], 10);
@@ -255,7 +350,7 @@ int main(void)
 			//LCD_GoTo(0,1);
 			//LCD_WriteText(line2);
 		
-			strncpy(&line[6], clock_.get_watch(seconds,sec), 12);
+			//strncpy(&line[6], clock_.get_watch(seconds,sec), 12);
 			//strncpy(clock_.get_watch(seconds,sec),&line[18],2);
 		
 		
@@ -264,15 +359,15 @@ int main(void)
 		
 			//Set the line value based on SW of encoder
 		
-			if(en->get_button_state())
-				strncpy(&line4[8], up, 4);
-			else
-				strncpy(&line4[8], dw, 4);
+			//if(en->get_button_state())
+			//	strncpy(&line4[8], up, 4);
+			//else
+			//	strncpy(&line4[8], dw, 4);
 		
-			itoa(en->get_encoder_state(), &line4[12], 6);
+			//itoa(en->get_encoder_state(), &line4[12], 6);
 		
-			lcd.set_line(2, line);
-			lcd.set_line(3, line4);
+			//lcd.set_line(2, line);
+			//lcd.set_line(3, line4);
 			//LCD_GoTo(0,2);
 			//LCD_WriteText(line);
 			//LCD_GoTo(0,3);

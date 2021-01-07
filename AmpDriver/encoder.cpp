@@ -7,6 +7,7 @@
 
 #include "avr/interrupt.h"
 #include "port.h"
+#include "menu_element.h"
 #include "encoder.h"
 
 
@@ -178,7 +179,6 @@ namespace nm_encoder{
 				direction = -1;
 			}
 #else
-			
 			if(direction == 0 && en_state == enc_0){ //en_state -> 0000
 				decrement_val();
 				direction = -1;
@@ -232,26 +232,37 @@ namespace nm_encoder{
 	void encoder::increment_val(){
 		
 		encoder_value++;
+		//call menu action
+		menu* mn = menu::get_menu();
+		mn->turn_cw();
 	}
 	
 	void encoder::decrement_val(){
 		
 		encoder_value--;
+		menu* mn = menu::get_menu();
+		mn->turn_ccw();
 	}
 	
 	void encoder::sw_down(){
 		
 		encoder_value = 0;
+		menu* mn = menu::get_menu();
+		mn->sw_low();
 	}
 	
 	void encoder::sw_change_down(){
 		
 		//encoder_value = 0;
+		menu* mn = menu::get_menu();
+		mn->sw_change_high_low();
 	}
 	
 	void encoder::sw_change_up(){
 		
 		clicks++;
+		menu* mn = menu::get_menu();
+		mn->sw_change_low_high();
 	}
 	
 	uc encoder::get_clicks(){

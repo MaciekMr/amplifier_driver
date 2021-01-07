@@ -10,8 +10,6 @@ clock.cpp
 
 configuration.cpp
 
-config_menu.cpp
-
 DG409.cpp
 
 DS1267.cpp
@@ -30,7 +28,13 @@ LCD.cpp
 
 main.cpp
 
+menu_element.cpp
+
 port.cpp
+
+PWMSet.cpp
+
+SPI_Master.cpp
 
 string_c.cpp
 
