@@ -11,7 +11,7 @@ PWMSet.d PWMSet.o: .././PWMSet.cpp \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\version.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
- .././PWMSet.h
+ .././IDevice.h .././PWMSet.h
 
 e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h:
 
@@ -36,5 +36,7 @@ e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\vers
 e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h:
 
 e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h:
+
+.././IDevice.h:
 
 .././PWMSet.h:

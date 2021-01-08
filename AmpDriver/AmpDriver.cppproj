@@ -231,6 +231,9 @@
     <Compile Include="HD44780.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="IDevice.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="interrupts.cpp">
       <SubType>compile</SubType>
     </Compile>

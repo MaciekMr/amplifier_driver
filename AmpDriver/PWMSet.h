@@ -20,7 +20,7 @@ The N variable represents the prescale factor (1, 8, 64, 256, or 1024)
 */
 
 #define PWM_CHANNELS 8
-#define STEP_NUMBERS 16 //number of steps for pwm 
+#define STEP_NUMBERS 32 //number of steps for pwm 
 
 //PC6 - transistor T1
 //PB0 - transistor T2
@@ -40,7 +40,7 @@ The N variable represents the prescale factor (1, 8, 64, 256, or 1024)
 #define PWM_O3	 PINB4
 
 
-class PWM_Channel
+class PWM_Channel 
 {
 protected:
 	int id;	
@@ -62,6 +62,7 @@ public:
 
 
 class PWMSet
+	:public IDevice
 {
 //variables
 public:
@@ -75,7 +76,8 @@ private:
 public:
 	PWMSet(int_fast8_t channels);
 	~PWMSet();
-	
+	void setValue(int_fast8_t new_value, uint8_t id);
+	int_fast8_t getValue();
 	void updatePWM();
 	void setPWM(int_fast8_t channel, uint8_t volume); //will set up the % of PWM for given channel
 	void callPWM(int_fast8_t call_no); //method executed by interrupt 

@@ -17,8 +17,8 @@ main.d main.o: .././main.cpp \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
- .././port.h .././configuration.h .././interrupts.h .././HD44780.h \
- .././DS1267.h .././DG409.h \
+ .././IDevice.h .././port.h .././configuration.h .././interrupts.h \
+ .././HD44780.h .././DS1267.h .././DG409.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
  .././list.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
@@ -61,6 +61,8 @@ e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h:
 e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h:
 
 e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h:
+
+.././IDevice.h:
 
 .././port.h:
 

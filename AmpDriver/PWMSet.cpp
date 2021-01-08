@@ -7,6 +7,7 @@
 
 
 #include <avr/interrupt.h>
+#include "IDevice.h"
 #include "PWMSet.h"
 
 // default constructor
@@ -71,7 +72,7 @@ PWMSet::PWMSet(int_fast8_t channels)
 	TCCR2A |= (1<<WGM21);
 	TCCR2B |= (1<<CS22) | (0<<CS21) | (1<<CS20); //prescaller 1/128 (8MHz -> 62,5kHz)
 	TCNT2 = 0x00; //start point
-	OCR2A = 0xAA; //used to generate OC2B pin output;if selected - generate impuls every 10th time - 6,25kHz
+	OCR2A = 0x11; //used to generate OC2B pin output;if selected - generate impuls every 10th time - 6,25kHz
 	//ASSR = .... - used for external clock
 	TIFR2 |= (1<<OCF2A); 
 	TIMSK2 |= (1 << OCIE2A);//to select the interrupt mask register (vector) we are selecting ->COMPA is selected
@@ -153,6 +154,17 @@ void PWMSet::setPWM(int_fast8_t channel, uint8_t volume)
 	pwm_channels[channel].set_step(volume);
 }
 
+void PWMSet::setValue(int_fast8_t new_value, uint8_t id)
+{
+	pwm_channels[id].set_step(new_value);
+}
+
+int_fast8_t PWMSet::getValue()
+{
+	
+	return 0;
+}
+
 
 
 PWM_Channel::PWM_Channel(volatile uint8_t *port, uint8_t mask)
@@ -164,6 +176,8 @@ PWM_Channel::PWM_Channel(volatile uint8_t *port, uint8_t mask)
 	channel_mask = mask;
 
 }
+
+
 
 PWM_Channel::PWM_Channel()
 {
@@ -190,7 +204,7 @@ void PWM_Channel::call_up(uint8_t call_no)
 	//when call_no - 0 -> pin up
 	//when call_no = value -> pin down
 	
-	pwm_test = call_no;
+	//pwm_test = call_no;
 	
 	if(value > 0 && value < STEP_NUMBERS)
 	{

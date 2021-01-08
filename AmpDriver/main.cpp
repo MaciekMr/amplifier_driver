@@ -12,6 +12,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include "IDevice.h"
 #include "port.h"
 #include "configuration.h"
 #include "interrupts.h"
@@ -156,7 +157,7 @@ int main(void)
 	
 	PWMSet pwm1(1);
 	pwm1.addchannel(&DDRC, &PWM_PORT_C, PINC6);
-	pwm1.setPWM(0, 20);
+	pwm1.setPWM(0, 30);
 	
 	LCD lcd;
 	
@@ -186,12 +187,16 @@ int main(void)
 		menu_element menu3_1(1, 2, 0, "Line1", 0);
 		menu_element menu3_2(1, 2, 0, "Line2", 0);
 		
-
+		//PWM 1
+		menu_element menu4_0(0, 3, 0, "PWM 1", 0);
+		menu_element menu4_1(1, 0, 1, "%", 0);
+		menu4_1.setdevice(&pwm1, 0);
+		
 
 		//Navigation (Volume)
 		menu1_0.setdown(&menu1_1);
 		menu1_0.setnext(&menu2_0);
-		menu1_0.setprev(&menu3_0);
+		menu1_0.setprev(&menu4_0);
 		menu1_0.settop(nullptr);
 
 		menu1_1.settop(&menu1_0);
@@ -226,7 +231,7 @@ int main(void)
 
 		//Navigation (Config)
 		menu3_0.setdown(&menu3_1);
-		menu3_0.setnext(&menu1_0);
+		menu3_0.setnext(&menu4_0);
 		menu3_0.setprev(&menu2_0);
 		menu3_0.settop(nullptr);
 
@@ -240,6 +245,14 @@ int main(void)
 		menu3_2.setprev(&menu3_1);
 		menu3_2.settop(&menu3_0);
 
+		//PWM set
+		menu4_0.setdown(&menu4_1);
+		menu4_0.setnext(&menu1_0);
+		menu4_0.setprev(&menu3_0);
+		menu4_0.settop(nullptr);
+		
+		menu4_1.settop(&menu4_0);
+		
 		menu menu(&menu1_0);
 	
 	//int a=0;
@@ -326,7 +339,7 @@ int main(void)
 			lcd.set_line(2,clock_.get_watch(seconds,sec), 4);
 			//Set encoder value
 			lcd.set_line(3, en->get_encoder_value());
-			lcd.set_line(3, pwm_test, 5);
+			//lcd.set_line(3, pwm_test, 5);
 			lcd.set_line(3, state1, 10);
 			//print all lines		
 			lcd.refresh();

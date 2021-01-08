@@ -12,7 +12,7 @@ menu_element.d menu_element.o: .././menu_element.cpp \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\version.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
- .././list.h \
+ .././IDevice.h .././list.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\alloca.h \
  .././lcd.h .././menu_element.h
@@ -42,6 +42,8 @@ e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\vers
 e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h:
 
 e:\tools\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h:
+
+.././IDevice.h:
 
 .././list.h:
 

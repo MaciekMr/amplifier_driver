@@ -32,6 +32,12 @@ protected:
 	/*Value string*/
 
 	char text_value[LCD_LEN];
+	
+	/*device object to controll*/
+	/*each device has to be derivved from IDevice */
+	
+	void *	device;
+	uint8_t device_id;
 
 private:
 	uc type; //0 - menu type - text (scroll to next), 1 - digit (scroll to increase/decrease value), 2 - edit??
@@ -51,7 +57,7 @@ public:
 	menu_element* turn_ccw(); //switch menu to left
 	//int			  get_value();
 
-	//Set the neighbvours
+	//Set the neighbours
 
 	void setnext(menu_element*);
 	void setprev(menu_element*);
@@ -66,6 +72,9 @@ public:
 	menu_element* get_superior();
 	menu_element* get_child();
 	bool istop();
+	
+	//add the object to be controlled by menu
+	void setdevice(void * object, uint8_t id = 0);
 
 };
 

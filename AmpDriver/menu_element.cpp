@@ -1,6 +1,7 @@
 
 #include <string.h>
 #include <avr/io.h>
+#include "IDevice.h"
 #include "list.h"
 #include "lcd.h"
 #include "menu_element.h"
@@ -203,6 +204,8 @@ menu_element::menu_element(uc _level, uc _index, uc _type, char* _name, int _val
 	strncpy(name, _name, LCD_LEN); //Copy text to element
 
 	top = down = prev = next = nullptr;
+	
+	device = nullptr;
 
 }
 
@@ -240,6 +243,9 @@ menu_element* menu_element::turn_cw() {
 	}else{
 		//check the type of the element and update value/increment value
 		this->value++;
+		//call the device
+		((IDevice *)device)->setValue(value, device_id);
+		
 		return(nullptr);
 	}
 
@@ -255,6 +261,7 @@ menu_element* menu_element::turn_ccw() {
 	else {
 		//check the type of the element and update value/increment value
 		this->value--;
+		((IDevice *)device)->setValue(value, device_id);
 		return(nullptr);
 	}
 
@@ -330,4 +337,11 @@ void menu_element::settop(menu_element* item)
 void menu_element::setdown(menu_element* item)
 {
 	down = item;
+}
+
+//Add device pointer 
+void menu_element::setdevice(void * ptr, uint8_t id)
+{
+	device = ptr;
+	device_id = id;
 }
