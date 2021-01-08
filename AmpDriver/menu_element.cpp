@@ -244,7 +244,8 @@ menu_element* menu_element::turn_cw() {
 		//check the type of the element and update value/increment value
 		this->value++;
 		//call the device
-		((IDevice *)device)->setValue(value, device_id);
+		if(device != nullptr)
+			((IDevice *)device)->setValue(value, device_id);
 		
 		return(nullptr);
 	}
@@ -261,7 +262,8 @@ menu_element* menu_element::turn_ccw() {
 	else {
 		//check the type of the element and update value/increment value
 		this->value--;
-		((IDevice *)device)->setValue(value, device_id);
+		if(device != nullptr)
+			((IDevice *)device)->setValue(value, device_id);
 		return(nullptr);
 	}
 
