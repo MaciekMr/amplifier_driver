@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <avr/io.h>
+#include "int_fasade.h"
 #include "configuration.h"
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -18,6 +19,7 @@
 #include <string.h>
 #include "interrupts.h"
 #include "lcd.h"
+#include "menu.h"
 #include "HD44780.h"
 
 
@@ -80,6 +82,9 @@ void spi_write(volatile uint8_t *port, uint8_t pin_no, unsigned char numberOfByt
  
 int main(void)
 {
+	menu menu_main;
+	lcd lcd_main;
+	//lcd_main.init();
 	char text1[LINE_LEN]; // = "Hello!!!!!";
 	char text2[LINE_LEN]; // = "Hello!!!!!";
 	memset(text1, 0, LINE_LEN);
@@ -91,9 +96,6 @@ int main(void)
     //Replace with your application code
 	initialise();
 	_delay_ms(20);
-	LCD_Initalize();
-	LCD_Clear();
-	LCD_Home();
 	interrupt_configure();
 	//LCD_GoTo(0,0);
 	//LCD_WriteText(text1);
@@ -109,16 +111,17 @@ int main(void)
 	//DDRA  ^= (-1 ^ DDRA) & (1UL << port_our); // set pin;
 	//PORTA ^= (-0 ^ PORTA) & (1UL << port_our);
 	
-	char digit[5];
+	//char digit[6];
 	
-	memset(digit, 0, sizeof(char) * 5);
+	//memset(digit, 0, sizeof(char) * 16);
+	
+	//lcd_main.update(0);
 	
     while (1) 
     {
 		
-		LCD_GoTo(0,0);
-	    LCD_WriteText(text1);
-		_delay_ms(1);
+		
+		//_delay_ms(1);
 		//LCD_GoTo(0,1);
 		//LCD_WriteText(text2);
 		//PORTA &= ~(1 << port_our); // PD0 goes low
@@ -133,9 +136,10 @@ int main(void)
 		LCD_DB4_PORT |= LCD_DB4;
 		_delay_ms(10);
 		*/
-		itoa(data, digit, 10);
-		LCD_GoTo(0,1);
-		LCD_WriteText(digit);
+		//memset(digit, 1, sizeof(char) * 6);
+		//itoa(data, digit, 10);
+		//LCD_GoTo(0,1);
+		//LCD_WriteText(digit, line_lenght);
 		//data++;
     }
 }

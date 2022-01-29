@@ -136,6 +136,7 @@
 	void LCD_WriteCommand(unsigned char);
 	void LCD_WriteData(unsigned char);
 	void LCD_WriteText(char *);
+	void LCD_WriteText(char * text, uint8_t len);
 	void LCD_GoTo(unsigned char, unsigned char);
 	void LCD_Clear(void);
 	void LCD_Home(void);

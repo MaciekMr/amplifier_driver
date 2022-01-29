@@ -27,7 +27,7 @@ public:
 	void add_object(void*);
 	void call_int(); //call interrupt method of object
 	
-	static object_list* get_class();
+	static object_list* get_object();
 friend void externall_call();
 friend void interrupt_configure();
 };

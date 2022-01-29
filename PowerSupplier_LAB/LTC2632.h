@@ -14,6 +14,9 @@
 
 typedef unsigned char uc;
 
+
+
+
 /*
 Table 1. Command Codes
 COMMAND*

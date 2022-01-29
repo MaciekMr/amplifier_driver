@@ -65,10 +65,6 @@ void _LCD_DataLine_Down()
 	//-------------------------------------------------------------------------------------------------
 	void _LCD_Write(unsigned char dataToWrite)
 	{
-		//Set RW pin to 0 (write)
-		//LCD_RW_PORT &= ~LCD_RW;
-		
-		//LCD_E_PORT &= ~LCD_E; //Set line 'E' to '0'
 		LCD_E_PORT |= LCD_E; //Set line 'E' to '1'
 		_LCD_OutNibble(dataToWrite >> 4);
 		_delay_ms(0.3);
@@ -77,13 +73,10 @@ void _LCD_DataLine_Down()
 		_LCD_DataLine_Down();
 		LCD_E_PORT |= LCD_E;
 		_LCD_OutNibble(dataToWrite);
-		//LCD_E_PORT &= ~LCD_E;
 		_delay_ms(0.3);
 		LCD_E_PORT &= ~LCD_E; //Set line 'E' to low
 		_delay_us(50);
 		_LCD_DataLine_Down();
-		//Set RW to 1 (read)
-		//LCD_RW_PORT |= LCD_RW;
 	}
 	//-------------------------------------------------------------------------------------------------
 	//
@@ -92,10 +85,8 @@ void _LCD_DataLine_Down()
 	//-------------------------------------------------------------------------------------------------
 	void LCD_WriteCommand(unsigned char commandToWrite)
 	{
-		//LCD_RW_PORT &= ~LCD_RW;
 		LCD_RS_PORT &= ~LCD_RS;  //set to low
 		_LCD_Write(commandToWrite);
-		//LCD_RW_PORT |= LCD_RW;
 		_LCD_DataLine_Down();
 	}
 	//-------------------------------------------------------------------------------------------------
@@ -115,18 +106,16 @@ void _LCD_DataLine_Down()
 	//-------------------------------------------------------------------------------------------------
 	void LCD_WriteText(char * text)
 	{
-		//LCD_RW_PORT &= ~LCD_RW;
-		/* 
-		volatile unsigned char i = LINE_LEN;
-		while(--i)
-			LCD_WriteData(*text++);
-		*/
-		//LCD_RW_PORT |= LCD_RW;
-		
-		
 		while(*text)
 		  LCD_WriteData(*text++);
 		  
+	}
+	
+	void LCD_WriteText(char * text, uint8_t len)
+	{
+		while(len--)
+			LCD_WriteData(*text++);
+		
 	}
 	//-------------------------------------------------------------------------------------------------
 	//

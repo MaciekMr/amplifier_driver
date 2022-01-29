@@ -41,8 +41,10 @@ C_SRCS +=  \
 ../interrupts.cpp \
 ../HD44780.cpp \
 ../lcd.cpp \
+../lcd_low.cpp \
 ../LTC2632.cpp \
-../main.cpp
+../main.cpp \
+../menu.cpp
 
 
 PREPROCESSING_SRCS += 
@@ -56,32 +58,40 @@ configuration.o \
 interrupts.o \
 HD44780.o \
 lcd.o \
+lcd_low.o \
 LTC2632.o \
-main.o
+main.o \
+menu.o
 
 OBJS_AS_ARGS +=  \
 configuration.o \
 interrupts.o \
 HD44780.o \
 lcd.o \
+lcd_low.o \
 LTC2632.o \
-main.o
+main.o \
+menu.o
 
 C_DEPS +=  \
 configuration.d \
 interrupts.d \
 HD44780.d \
 lcd.d \
+lcd_low.d \
 LTC2632.d \
-main.d
+main.d \
+menu.d
 
 C_DEPS_AS_ARGS +=  \
 configuration.d \
 interrupts.d \
 HD44780.d \
 lcd.d \
+lcd_low.d \
 LTC2632.d \
-main.d
+main.d \
+menu.d
 
 OUTPUT_FILE_PATH +=PowerSupplier_LAB.elf
 
@@ -125,6 +135,13 @@ LINKER_SCRIPT_DEP+=
 	@echo Finished building: $<
 	
 
+./lcd_low.o: .././lcd_low.cpp
+	@echo Building file: $<
+	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
+	$(QUOTE)E:\tools\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DNDEBUG  -I"E:\tools\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega324p -B "E:\tools\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega324p" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./LTC2632.o: .././LTC2632.cpp
 	@echo Building file: $<
 	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
@@ -133,6 +150,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./main.o: .././main.cpp
+	@echo Building file: $<
+	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
+	$(QUOTE)E:\tools\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DNDEBUG  -I"E:\tools\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega324p -B "E:\tools\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega324p" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./menu.o: .././menu.cpp
 	@echo Building file: $<
 	@echo Invoking: AVR8/GNU C Compiler : 5.4.0
 	$(QUOTE)E:\tools\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DNDEBUG  -I"E:\tools\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -mmcu=atmega324p -B "E:\tools\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega324p" -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

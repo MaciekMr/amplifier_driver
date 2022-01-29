@@ -10,6 +10,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include "int_fasade.h"
+#include "lcd.h"
 #include "interrupts.h"
 
 
@@ -72,7 +74,8 @@ ISR(TIMER1_COMPA_vect){
 void externall_call()
 {
 	
-	((object_list*)object_list::get_class())->call_int();
+	((object_list*)object_list::get_object())->call_int();
+	//pointer->call_int();
 }
 
 
@@ -85,9 +88,10 @@ object_list::object_list()
 	object_counter = 0;
 }
 
-void object_list::add_object(void*)
+void object_list::add_object(void* pointer)
 {
-	
+	objects[object_counter] = pointer;
+	object_counter++;
 }
 
 
@@ -95,10 +99,19 @@ void object_list::call_int()
 {
 	
 	data++;
+	
+	//System has to call all object with the same method
+	//lcd::get_object()->update(0);
+	
+	for(int i = 0; i < object_counter; i++)
+	{
+		((fasade*)objects[i])->update(0);		
+	}
+	
 }
 
 
-object_list* object_list::get_class()
+object_list* object_list::get_object()
 {
 	return pointer;
 }
