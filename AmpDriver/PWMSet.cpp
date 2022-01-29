@@ -70,9 +70,9 @@ PWMSet::PWMSet(int_fast8_t channels)
 	
 	cli();
 	TCCR2A |= (1<<WGM21);
-	TCCR2B |= (1<<CS22) | (0<<CS21) | (1<<CS20); //prescaller 1/128 (8MHz -> 62,5kHz)
+	TCCR2B |= (1<<CS22) | (0<<CS21) | (0<<CS20); //prescaller 1/128 (8MHz -> 62,5kHz)
 	TCNT2 = 0x00; //start point
-	OCR2A = 0x11; //used to generate OC2B pin output;if selected - generate impuls every 10th time - 6,25kHz
+	OCR2A = 0x04; //used to generate OC2B pin output;if selected - generate impuls every 10th time - 6,25kHz
 	//ASSR = .... - used for external clock
 	TIFR2 |= (1<<OCF2A); 
 	TIMSK2 |= (1 << OCIE2A);//to select the interrupt mask register (vector) we are selecting ->COMPA is selected

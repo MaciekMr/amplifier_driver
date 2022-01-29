@@ -11,11 +11,25 @@
 //-------------------------------------------------------------------------------------------------
 
 
-#include "port.h"
+//#include "port.h"
 #include "configuration.h"
 #include "HD44780.h"
 
-using namespace nm_DS1267;
+//using namespace nm_DS1267;
+
+//-------------------------------------------------------------------------------------------------
+//
+// Funkcja wystawiaj¹ca pó³bajt na magistralê danych
+//
+//-------------------------------------------------------------------------------------------------
+
+void _LCD_DataLine_Down()
+{
+	LCD_DB4_PORT  &= ~LCD_DB4;
+	LCD_DB5_PORT  &= ~LCD_DB5;
+	LCD_DB6_PORT  &= ~LCD_DB6;
+	LCD_DB7_PORT  &= ~LCD_DB7;
+}
 //-------------------------------------------------------------------------------------------------
 //
 // Funkcja wystawiaj¹ca pó³bajt na magistralê danych
@@ -51,13 +65,25 @@ using namespace nm_DS1267;
 	//-------------------------------------------------------------------------------------------------
 	void _LCD_Write(unsigned char dataToWrite)
 	{
-		LCD_E_PORT |= LCD_E;
+		//Set RW pin to 0 (write)
+		//LCD_RW_PORT &= ~LCD_RW;
+		
+		//LCD_E_PORT &= ~LCD_E; //Set line 'E' to '0'
+		LCD_E_PORT |= LCD_E; //Set line 'E' to '1'
 		_LCD_OutNibble(dataToWrite >> 4);
-		LCD_E_PORT &= ~LCD_E;
+		_delay_ms(0.3);
+		LCD_E_PORT &= ~LCD_E; //Set line 'E' to '0'
+		
+		_LCD_DataLine_Down();
 		LCD_E_PORT |= LCD_E;
 		_LCD_OutNibble(dataToWrite);
-		LCD_E_PORT &= ~LCD_E;
+		//LCD_E_PORT &= ~LCD_E;
+		_delay_ms(0.3);
+		LCD_E_PORT &= ~LCD_E; //Set line 'E' to low
 		_delay_us(50);
+		_LCD_DataLine_Down();
+		//Set RW to 1 (read)
+		//LCD_RW_PORT |= LCD_RW;
 	}
 	//-------------------------------------------------------------------------------------------------
 	//
@@ -66,8 +92,11 @@ using namespace nm_DS1267;
 	//-------------------------------------------------------------------------------------------------
 	void LCD_WriteCommand(unsigned char commandToWrite)
 	{
-		LCD_RS_PORT &= ~LCD_RS;
+		//LCD_RW_PORT &= ~LCD_RW;
+		LCD_RS_PORT &= ~LCD_RS;  //set to low
 		_LCD_Write(commandToWrite);
+		//LCD_RW_PORT |= LCD_RW;
+		_LCD_DataLine_Down();
 	}
 	//-------------------------------------------------------------------------------------------------
 	//
@@ -76,7 +105,7 @@ using namespace nm_DS1267;
 	//-------------------------------------------------------------------------------------------------
 	void LCD_WriteData(unsigned char dataToWrite)
 	{
-		LCD_RS_PORT |= LCD_RS;
+		LCD_RS_PORT |= LCD_RS; //set to high
 		_LCD_Write(dataToWrite);
 	}
 	//-------------------------------------------------------------------------------------------------
@@ -86,8 +115,18 @@ using namespace nm_DS1267;
 	//-------------------------------------------------------------------------------------------------
 	void LCD_WriteText(char * text)
 	{
+		//LCD_RW_PORT &= ~LCD_RW;
+		/* 
+		volatile unsigned char i = LINE_LEN;
+		while(--i)
+			LCD_WriteData(*text++);
+		*/
+		//LCD_RW_PORT |= LCD_RW;
+		
+		
 		while(*text)
 		  LCD_WriteData(*text++);
+		  
 	}
 	//-------------------------------------------------------------------------------------------------
 	//
@@ -143,27 +182,27 @@ using namespace nm_DS1267;
 	void LCD_Initalize(void)
 	{
 		unsigned char i;
-		LCD_RW_DIR  |= LCD_RW;
 		LCD_DB4_DIR |= LCD_DB4; // Konfiguracja kierunku pracy wyprowadzeñ
 		LCD_DB5_DIR |= LCD_DB5; //
 		LCD_DB6_DIR |= LCD_DB6; //
 		LCD_DB7_DIR |= LCD_DB7; //
 		LCD_E_DIR 	|= LCD_E;   //
 		LCD_RS_DIR 	|= LCD_RS;  //
-		LCD_RW_PORT &= ~LCD_RW;
+		LCD_RW_DIR 	|= LCD_RW;  //
 		_delay_ms(25); // oczekiwanie na ustalibizowanie siê napiecia zasilajacego
 		//_delay_ms(15); // oczekiwanie na ustalibizowanie siê napiecia zasilajacego
 		LCD_RS_PORT &= ~LCD_RS; // wyzerowanie linii RS
-		LCD_E_PORT &= ~LCD_E;  // wyzerowanie linii E
-		
+		LCD_E_PORT  &= ~LCD_E;  // wyzerowanie linii E
+		LCD_RW_PORT &= ~LCD_RW;  // Set to write 
+
 		for(i = 0; i < 3; i++) // trzykrotne powtórzenie bloku instrukcji
-		  {
+		{
 		  LCD_E_PORT |= LCD_E; //  E = 1
 		  _LCD_OutNibble(0x03); // tryb 8-bitowy
 		  LCD_E_PORT &= ~LCD_E; // E = 0
 		  _delay_ms(10); // czekaj 5ms
 		  //_delay_ms(5); // czekaj 5ms
-		  }
+		}
 
 		LCD_E_PORT |= LCD_E; // E = 1
 		_LCD_OutNibble(0x02); // tryb 4-bitowy
@@ -171,7 +210,9 @@ using namespace nm_DS1267;
 
 		//_delay_ms(1); // czekaj 1ms 
 		_delay_ms(5); // czekaj 1ms 
-		LCD_WriteCommand(HD44780_FUNCTION_SET | HD44780_FONT5x7 | HD44780_TWO_LINE | HD44780_4_BIT); // interfejs 4-bity, 2-linie, znak 5x7
+		//LCD_WriteCommand(HD44780_FUNCTION_SET | HD44780_FONT5x7 | HD44780_TWO_LINE | HD44780_4_BIT); // interfejs 4-bity, 2-linie, znak 5x7
+		//LCD_WriteCommand(HD44780_FUNCTION_SET | HD44780_FONT5x7 |HD44780_FOUR_LINE | HD44780_4_BIT); 
+		LCD_WriteCommand(HD44780_FUNCTION_SET | HD44780_FONT5x7 |HD44780_TWO_LINE | HD44780_4_BIT); 
 		LCD_WriteCommand(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_OFF); // wy³¹czenie wyswietlacza
 		LCD_WriteCommand(HD44780_CLEAR); // czyszczenie zawartosæi pamieci DDRAM
 		

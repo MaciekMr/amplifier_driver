@@ -5,16 +5,16 @@
  * Author : macie
  */ 
 
-#define F_CPU 8000000UL //after update the fuses http://www.engbedded.com/fusecalc/
+//#define F_CPU 1000000UL //after update the fuses http://www.engbedded.com/fusecalc/
 
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <util/delay.h>
-#include <stdio.h>
 #include "IDevice.h"
 #include "port.h"
 #include "configuration.h"
+#include <util/delay.h>
+#include <stdio.h>
 #include "interrupts.h"
 #include "HD44780.h"
 #include "DS1267.h"
@@ -155,9 +155,9 @@ int main(void)
     /* Replace with your application code */
 	//seconds = 0;
 	
-	PWMSet pwm1(1);
-	pwm1.addchannel(&DDRC, &PWM_PORT_C, PINC6);
-	pwm1.setPWM(0, 30);
+	//PWMSet pwm1(1);
+	//pwm1.addchannel(&DDRC, &PWM_PORT_C, PINC6);
+	//pwm1.setPWM(0, 30);
 	
 	LCD lcd;
 	
@@ -168,6 +168,7 @@ int main(void)
 	LCD_Clear();
 	LCD_Home();
 	
+	/*
 	
 	//config_menu();
 	
@@ -284,6 +285,7 @@ int main(void)
 	PORTD |= 0xFF;
 	*/
 	
+	/*
 	//Initialise encoder
 	encoder enc;
 	
@@ -309,7 +311,7 @@ int main(void)
 	
 	encoder *en = encoder::get_encoder();
 	
-		
+	*/	
     while (1) 
     {
 		
@@ -326,6 +328,7 @@ int main(void)
 		//state = encoder_sw.getValue();
 		
 		//Execute part 100 times per second
+		/*
 		if(!reaction){
 		
 			//state = (PINB >> PINB1) & 1U;
@@ -386,6 +389,14 @@ int main(void)
 			//LCD_GoTo(0,3);
 			//LCD_WriteText(line4);		
 		}
+		*/
+		LCD_GoTo(0,0);
+		LCD_WriteText("Hello !!!\\0");
+		
+		//LCD_GoTo(0,0);
+		//LCD_WriteText("Welcome!\\0");
+		
+		_delay_ms(100);
     }
 }
 

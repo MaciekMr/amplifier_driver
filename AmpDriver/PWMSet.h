@@ -20,7 +20,7 @@ The N variable represents the prescale factor (1, 8, 64, 256, or 1024)
 */
 
 #define PWM_CHANNELS 8
-#define STEP_NUMBERS 32 //number of steps for pwm 
+#define STEP_NUMBERS 100 //number of steps for pwm 
 
 //PC6 - transistor T1
 //PB0 - transistor T2
