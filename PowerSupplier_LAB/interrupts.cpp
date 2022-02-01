@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "configuration.h"
 #include <util/delay.h>
 #include "int_fasade.h"
 #include "lcd.h"

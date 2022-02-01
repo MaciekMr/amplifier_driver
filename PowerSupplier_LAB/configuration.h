@@ -23,7 +23,7 @@ extern char line1[];
 extern char line2[];
 extern char line3[];
 
-extern volatile long sec;
+
 
 
 

@@ -86,7 +86,7 @@ int main(void)
 	lcd lcd_main;
 	//lcd_main.init();
 	char text1[LINE_LEN]; // = "Hello!!!!!";
-	char text2[LINE_LEN]; // = "Hello!!!!!";
+	//char text2[LINE_LEN]; // = "Hello!!!!!";
 	memset(text1, 0, LINE_LEN);
 	strncpy(text1, "Hello !!! World", 15);
 	//memset(text2, 0, LINE_LEN);

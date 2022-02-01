@@ -15,7 +15,7 @@ char line1[20] = "Hello LCD          ";
 char line2[20] = "                   ";
 char line3[20] = "Inter--------------";
 
-
+extern volatile long sec;
 
 /*
 

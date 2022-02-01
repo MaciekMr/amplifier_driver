@@ -48,7 +48,7 @@ void menu::set_value(uint8_t line_no, int value)
 	{
 		strncpy(line[0], line_1, sizeof(char)*15);
 		//strncpy(&line[0][3], val, sizeof(char)*5);
-		for (int c = 0; c < strlen(val); c++)
+		for (uint8_t c = 0; c < strlen(val); c++)
 			line[0][3 + c] = val[c];
 		//copy the value into line
 	}
@@ -56,7 +56,7 @@ void menu::set_value(uint8_t line_no, int value)
 	{
 		strncpy(line[1], line_2, sizeof(char)*15);
 		//strncpy(&line[1][4], val, sizeof(char)*5);
-		for (int c = 0; c < strlen(val); c++)
+		for (uint8_t c = 0; c < strlen(val); c++)
 			line[1][3 + c] = val[c];
 	}
 	
