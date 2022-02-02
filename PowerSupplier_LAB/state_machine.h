@@ -9,29 +9,6 @@
 #ifndef STATE_MACHINE_H_
 #define STATE_MACHINE_H_
 
-#define STATES_NO   3
-
-#define STATE_1  WELCOME
-#define STATE_2  VOLTAGE
-#define STATE_3  CURRENT
-
-//State type 
-//for branch we can scroll up,down
-//When select we can move to next 
-//When leaf , there is no next, but we can set value when clicked
-
-enum state_type
-{
-	BRANCH = 1,
-	LEAF = 2	
-};
-
-enum state_e
-{
-	WELCOME=0,
-	VOLTAGE=1,
-	CURRENT=2
-};
 
 
 //State can have path forward and path reverse
@@ -40,11 +17,9 @@ enum state_e
 //state_machien will trigger object to set its state
 //when the action will be triggered (like rotate encoder, interrupt, etc.) state_machine will call dedicated method
 
-struct state
+struct state:public state_main
 {
-	state_e id;
 	state* prev, *next, *up, *down;
-	state_type type;
 	void*  active_objects[10];	
 };
 
@@ -52,13 +27,19 @@ struct state
 
 class state_machine
 {
-
+private:
+	state *current_node;
+	state *pre_node;
 protected:
 	state states[STATES_NO];
 	
 public:
 	state_machine();  //configure state flow
 	void register_object(state_e state_id, void *);
+	
+	void turn_left();
+	void turn_right();
+	void switch_down();
 };
 
 

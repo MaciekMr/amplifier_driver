@@ -12,6 +12,7 @@
 #include "configuration.h"
 #include <util/delay.h>
 #include "int_fasade.h"
+#include "states.h"
 #include "lcd.h"
 #include "interrupts.h"
 
@@ -66,6 +67,9 @@ ISR(TIMER1_COMPA_vect){
 		
 		++seconds;
 		sec = 0;
+		state_main state;
+		state.id = VOLTAGE;
+		lcd::get_object()->change_state(state);
 	}
 	
 	externall_call(); //call each 100ms

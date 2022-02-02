@@ -9,6 +9,7 @@
 #include "string.h"
 #include "int_fasade.h"
 #include "interrupts.h"
+#include "states.h"
 #include "lcd.h"
 #include "menu.h"
 

@@ -11,7 +11,7 @@
 #include "HD44780.h"
 #include "int_fasade.h"
 #include "interrupts.h"
-
+#include "states.h"
 #include "lcd.h"
 #include "menu.h"
 
@@ -33,6 +33,7 @@ void lcd::init()
 	LCD_Initalize();
 	LCD_Clear();
 	LCD_Home();
+	isupdated = true;
 }
 
 void lcd::refresh()
@@ -45,12 +46,15 @@ void lcd::refresh()
 void lcd::draw_all()
 {
 	//print all lines
-	for(int i = 0; i < lines_number; i++)
+	if(isupdated)
 	{
-		LCD_GoTo(0,i);
-		LCD_WriteText(lcdline[i], line_lenght);
-	}
-	
+		for(int i = 0; i < lines_number; i++)
+		{
+			LCD_GoTo(0,i);
+			LCD_WriteText(lcdline[i], line_lenght);
+		}
+		isupdated = false;
+	}	
 }
 
 void  lcd::update(int_fast8_t dir)
@@ -62,7 +66,38 @@ void  lcd::update(int_fast8_t dir)
 	draw_all();
 }
 
+/*
+New state will change the screen view
+Based on state the specific action will be performed
+for example. If the state will be set_v
+the value will be updated based on provided number
+the value will be injected into specific part of lcd
+To set the value the method set value will be executed
+but this is only for leaf type of state
+*/
+void lcd::change_state(state_main new_state)
+{
+	isupdated = true;
+	switch(new_state.id)
+	{
+		case WELCOME:
+				{
+					welcome(new_state);
+					break;
+				};
+		
+	}
+}
+
 lcd* lcd::get_object()
 {
 	return pointer;
+}
+
+
+
+void lcd::welcome(state_main state)
+{
+	
+	
 }

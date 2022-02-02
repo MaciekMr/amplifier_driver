@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include "avr/interrupt.h"
 #include <string.h>
+#include "states.h"
 #include "interrupts.h"
 #include "lcd.h"
 #include "menu.h"

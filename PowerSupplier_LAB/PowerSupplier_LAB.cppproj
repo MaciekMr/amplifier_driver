@@ -210,6 +210,9 @@
     <Compile Include="menu.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="states.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="state_machine.cpp">
       <SubType>compile</SubType>
     </Compile>
