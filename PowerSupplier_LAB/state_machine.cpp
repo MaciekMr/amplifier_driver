@@ -10,7 +10,9 @@
 #include "states.h"
 #include "state_machine.h"
 
+extern uint_fast16_t data;
 
+state_machine* state_machine::pointer;
 
 state_machine::state_machine()
 {
@@ -36,7 +38,14 @@ state_machine::state_machine()
 	
 	
 	current_node = &state_1;
-	pre_node	 = &state_2;
+	pre_node	 = state_1.next;
+	pointer		 = this;
+}
+
+state_machine* state_machine::get_object()
+{
+	
+	return(pointer);
 }
 
 void state_machine::register_object(state_e state_id, void *)
@@ -54,20 +63,19 @@ void state_machine::register_object(state_e state_id, void *)
 //current_node = current_node->prev
 void state_machine::turn_left()
 {
-	
+	data++;
 }
 //change state to up
 //It will select next->up, next->up->up, next->up->up->up
 void state_machine::turn_right()
 {
-	
-	
+	data--;	
 }
 
 //change current state to new one 
 //when scrolling
 //Normally, we operate on current state
-//and when turnig, just scroll the state without selection
+//and when turning, just scroll the state without selection
 //mostly for menu
 //i.e.
 //current menu config: up->bright, down->time
@@ -87,5 +95,10 @@ void state_machine::turn_right()
 void state_machine::switch_down()
 {
 	
+	
+}
+
+void state_machine::switch_up()
+{
 	
 }

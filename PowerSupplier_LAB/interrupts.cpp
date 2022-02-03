@@ -103,7 +103,7 @@ void object_list::add_object(void* pointer)
 void object_list::call_int()
 {
 	
-	data++;
+	//data++;
 	
 	//System has to call all object with the same method
 	//lcd::get_object()->update(0);

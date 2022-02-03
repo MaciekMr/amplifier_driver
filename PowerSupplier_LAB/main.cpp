@@ -18,11 +18,15 @@
 #include "avr/interrupt.h"
 #include <string.h>
 #include "states.h"
+#include "state_machine.h"
 #include "interrupts.h"
 #include "lcd.h"
+#include "encoder.h"
 #include "menu.h"
 #include "HD44780.h"
 
+
+using namespace nm_encoder;
 
 #define DDR_SPI DDRB
 #define DD_MOSI PINB5
@@ -95,9 +99,12 @@ int main(void)
 	//memset(&text, 0, 15);
 	//strcpy(text = "Hello!!!!"
     //Replace with your application code
+	state_machine machine;
 	initialise();
 	_delay_ms(20);
 	interrupt_configure();
+	set_encoder_timer();
+	encoder encoder1;
 	//LCD_GoTo(0,0);
 	//LCD_WriteText(text1);
 	//lcd_init();

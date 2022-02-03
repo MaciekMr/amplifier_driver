@@ -30,6 +30,7 @@ class state_machine
 private:
 	state *current_node;
 	state *pre_node;
+	static state_machine *pointer;
 protected:
 	state states[STATES_NO];
 	
@@ -40,6 +41,10 @@ public:
 	void turn_left();
 	void turn_right();
 	void switch_down();
+	void switch_up();
+	
+	
+	static state_machine* get_object();
 };
 
 

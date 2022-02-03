@@ -8,6 +8,8 @@
 #include "avr/interrupt.h"
 //#include "port.h"
 //#include "menu_element.h"
+#include "states.h"
+#include "state_machine.h"
 #include "input_poll.h"
 #include "encoder.h"
 
@@ -28,7 +30,6 @@
 
 
 volatile long reaction = 0;
-
 
 ISR(TIMER0_COMPB_vect){
 	
@@ -239,7 +240,8 @@ namespace nm_encoder{
 		//call menu action
 		//menu* mn = menu::get_menu();
 		//mn->turn_cw();
-		input_poll::get_object()->set_event(GUID_ENC, ENC1_IN_UP);
+		//input_poll::get_object()->set_event(GUID_ENC, ENC1_IN_UP);
+		state_machine::get_object()->turn_right();		
 	}
 	
 	void encoder::decrement_val(){
@@ -247,7 +249,8 @@ namespace nm_encoder{
 		encoder_value--;
 		//menu* mn = menu::get_menu();
 		//mn->turn_ccw();
-		input_poll::get_object()->set_event(GUID_ENC, ENC1_IN_DOWN);
+		//input_poll::get_object()->set_event(GUID_ENC, ENC1_IN_DOWN);
+		state_machine::get_object()->turn_left();	
 	}
 	
 	void encoder::sw_down(){
@@ -255,6 +258,7 @@ namespace nm_encoder{
 		encoder_value = 0;
 		//menu* mn = menu::get_menu();
 		//mn->sw_low();
+		state_machine::get_object()->switch_down();
 	}
 	
 	void encoder::sw_change_down(){
@@ -269,6 +273,7 @@ namespace nm_encoder{
 		clicks++;
 		//menu* mn = menu::get_menu();
 		//mn->sw_change_low_high();
+		state_machine::get_object()->switch_up();
 	}
 	
 	uint8_t encoder::get_clicks(){

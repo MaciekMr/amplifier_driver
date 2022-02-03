@@ -9,7 +9,7 @@
 #ifndef ENCODER_H_
 #define ENCODER_H_
 
-#define SCHMITT_NEG 1  //Used if inverting Schmitt gate is used
+//#define SCHMITT_NEG 1  //Used if inverting Schmitt gate is used
 
 #define MAX_ENCODER_VAL 512
 
